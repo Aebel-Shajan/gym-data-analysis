@@ -7,6 +7,8 @@ def process_data():
     with open("config.yaml") as f:
         config = yaml.safe_load(f)
     
-    workout_data = pd.read_csv(config["input_data"], delimiter=";")
-    print(workout_data.head())
-    
+    raw_df = pd.read_csv(config["input_data"], delimiter=";", parse_dates=['Date'])
+
+    # df containing dates, workout names and workout duration
+    workout_df = raw_df[["Date", "Workout Name", "Workout Duration"]].drop_duplicates()
+    print(workout_df.head())
