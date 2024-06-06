@@ -46,6 +46,31 @@ def plot_workout_barplot(workout_df):
     plt.title('Workout Frequency by Day of Week')
     plt.savefig('./data/output/workout_barplot.png', dpi=300)
     plt.show()
+    
+def plot_weekly_workout(workout_df):
+    workout_df['WeekNumber'] = workout_df['Date'].dt.strftime('%Y-%W')
+    print(workout_df.head())
+    week_counts =  workout_df['WeekNumber'].value_counts().sort_index()
+    
+    plt.figure(figsize=(8, 6))
+    plt.bar(week_counts.index, week_counts.values)
+    plt.xlabel('Week number')
+    plt.xticks([])
+    plt.ylabel('Frequency')
+    
+    plt.title('Workouts per week')
+    
+    # Add a label/line for when a new year starts
+    years = workout_df['Date'].dt.year.unique()
+    for year in years:
+        first_week = f'{year}-01'
+        if first_week in week_counts.index:
+            plt.axvline(x=first_week, color='red', linestyle='--', linewidth=1)
+            # Add text with the year
+            plt.text(x=first_week, y=week_counts.max(), s=str(year), color='red', ha='center', va='bottom')
+    
+    plt.savefig('./data/output/weekly_workout_barplot.png', dpi=300)
+    plt.show()
 
 def process_data():
     print("Starting processing data")
@@ -65,3 +90,5 @@ def process_data():
     
     # display workout frequency
     plot_workout_barplot(workout_df)
+    
+    plot_weekly_workout(workout_df)
