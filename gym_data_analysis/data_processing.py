@@ -19,6 +19,21 @@ def parse_duration(duration):
             total_minutes += int(minutes)
     return total_minutes
 
+def plot_workout_heatmap(workout_df):
+    july.heatmap(
+        workout_df["Date"], 
+        workout_df["Workout Duration"], 
+        title='Workouts', 
+        cmap="YlGn", 
+        colorbar=True,
+        cmax=100,
+        month_grid=True,
+        fontfamily="monospace",
+        fontsize=12,
+        dpi=100
+        )
+    plt.savefig('./data/output/workout_heatmap.png', dpi=300, bbox_inches='tight')
+
 def process_data():
     print("Starting processing data")
     config = None
@@ -32,16 +47,5 @@ def process_data():
     workout_df['Workout Duration'] = workout_df['Workout Duration'].apply(parse_duration)
     print(workout_df.head())
     
-    july.heatmap(
-        workout_df["Date"], 
-        workout_df["Workout Duration"], 
-        title='Workouts', 
-        cmap="Blues", 
-        colorbar=True,
-        cmax=100,
-        month_grid=True,
-        fontfamily="monospace",
-        fontsize=12,
-        dpi=100
-        )
-    plt.savefig('./data/output/workout_heatmap.png', dpi=300, bbox_inches='tight')
+    # display heatmap
+    plot_workout_heatmap(workout_df)
