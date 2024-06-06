@@ -36,7 +36,7 @@ def process_data():
         workout_df["Date"], 
         workout_df["Workout Duration"], 
         title='Workouts', 
-        cmap="golden", 
+        cmap="Blues", 
         colorbar=True,
         cmax=100,
         month_grid=True,
