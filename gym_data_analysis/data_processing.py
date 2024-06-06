@@ -34,6 +34,19 @@ def plot_workout_heatmap(workout_df):
         )
     plt.savefig('./data/output/workout_heatmap.png', dpi=300, bbox_inches='tight')
 
+def plot_workout_barplot(workout_df):
+    workout_df['Day of Week'] = workout_df['Date'].dt.day_name()
+    day_counts = workout_df['Day of Week'].value_counts().reindex(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'])
+
+
+    plt.figure(figsize=(8, 6))
+    plt.bar(day_counts.index, day_counts.values)
+    plt.xlabel('Day of Week')
+    plt.ylabel('Frequency')
+    plt.title('Workout Frequency by Day of Week')
+    plt.savefig('./data/output/workout_barplot.png', dpi=300)
+    plt.show()
+
 def process_data():
     print("Starting processing data")
     config = None
@@ -49,3 +62,6 @@ def process_data():
     
     # display heatmap
     plot_workout_heatmap(workout_df)
+    
+    # display workout frequency
+    plot_workout_barplot(workout_df)
