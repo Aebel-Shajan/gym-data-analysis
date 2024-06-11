@@ -43,7 +43,7 @@ def plot_weekly_workouts(workout_df):
     week_counts =  workout_df['WeekNumber'].value_counts().sort_index()
 
     plt.figure(figsize=(8, 6))
-    plt.bar(week_counts.index, week_counts.values)
+    plt.plot(list(week_counts.index), list(week_counts.values))
     plt.xlabel('Week number')
     plt.xticks([])
     plt.ylabel('Frequency')
@@ -83,3 +83,15 @@ def plot_hourly_workouts(workout_df):
     plt.ylabel('Frequency')
     plt.title('Workouts per hour')
     plt.show()
+    
+def plot_workout_types(workout_df):
+    workout_type_counts = workout_df["Workout Name"].value_counts()
+    
+    plt.figure(figsize=(8, 6))
+    plt.bar(workout_type_counts.index, workout_type_counts.values)
+    plt.xticks(rotation='vertical',  fontsize=10)
+    plt.xlabel('Workout Name')
+    plt.ylabel('Frequency')
+    plt.title('Workout types')
+    plt.show()
+    
