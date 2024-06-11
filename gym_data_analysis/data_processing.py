@@ -6,7 +6,7 @@ import july
 import re
 
 
-
+# Utils
 def parse_duration(duration):
     # Initialize the total duration in minutes
     total_minutes = 0
@@ -21,6 +21,15 @@ def parse_duration(duration):
         if minutes:
             total_minutes += int(minutes)
     return total_minutes
+
+
+def first_non_zero(arr):
+    I = np.nonzero(arr)
+    return I[0][0]
+
+
+def last_non_zero(arr):
+    return len(arr) - first_non_zero(list(reversed(arr)))
 
 
 def plot_workouts_heatmap(workout_df):
@@ -84,6 +93,33 @@ def plot_hourly_workouts(workout_df):
     plt.title('Workouts per hour')
     plt.show()
     
+
+def plot_workouts_every_minute(workout_df):
+    smallest_increment = 1 # in minutes
+    total_mins = 1440
+    time_bins = np.zeros(total_mins // smallest_increment, dtype=int)
+    time_labels = np.arange(0, len(time_bins))#np.zeros(total_mins // smallest_increment, dtype=int)
+    time_labels = ['{:02d}:{:02d}'.format(*divmod(x, 60)) for x in time_labels]
+    
+    # convert to mins then round to smallest increment
+    workout_df["DailyMinute"] = (workout_df["Date"].dt.hour * 60) + workout_df["Date"].dt.minute
+    workout_df["DailyMinute"] = (workout_df["DailyMinute"] // smallest_increment) * smallest_increment
+
+    for index, row in workout_df.iterrows():
+        start_index = int(row["DailyMinute"]) // smallest_increment
+        time_bins[start_index] += 1
+        for offset_index in range(row["Workout Duration"] // smallest_increment):
+            time_bins[start_index + offset_index] += 1
+    
+    plt.figure(figsize=(8, 6))
+    plt.plot(time_labels, time_bins)
+    plt.xticks(time_labels[::120], rotation="vertical")
+    plt.xlabel('Hour')
+    plt.ylabel('Frequency')
+    plt.title('Spread of workouts through the day')
+    plt.show()
+    
+        
 def plot_workout_types(workout_df):
     workout_type_counts = workout_df["Workout Name"].value_counts()
     
