@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
 import yaml
 import july
 import re
@@ -69,4 +70,15 @@ def plot_weekly_workout(workout_df):
             # Add text with the year
             plt.text(x=first_week, y=week_counts.max(), s=str(year), color='red', ha='center', va='bottom')
             
+    plt.show()
+    
+def plot_hourly_workout(workout_df):
+    workout_df["HourNumber"] = workout_df["Date"].dt.strftime('%H')
+    hour_counts = workout_df["HourNumber"].value_counts().sort_index()
+    
+    plt.figure(figsize=(8, 6))
+    plt.bar(hour_counts.index, hour_counts.values)
+    plt.xlabel('Hour')
+    plt.ylabel('Frequency')
+    plt.title('Workouts per hour')
     plt.show()
