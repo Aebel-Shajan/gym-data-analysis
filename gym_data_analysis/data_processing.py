@@ -23,7 +23,7 @@ def parse_duration(duration):
     return total_minutes
 
 
-def plot_workout_heatmap(workout_df):
+def plot_workouts_heatmap(workout_df):
     july.heatmap(
         workout_df["Date"], 
         workout_df["Workout Duration"], 
@@ -37,20 +37,8 @@ def plot_workout_heatmap(workout_df):
         dpi=100
         )
 
-
-def plot_workout_barplot(workout_df):
-    workout_df['Day of Week'] = workout_df['Date'].dt.day_name()
-    day_counts = workout_df['Day of Week'].value_counts().reindex(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'])
-
-    plt.figure(figsize=(8, 6))
-    plt.bar(day_counts.index, day_counts.values)
-    plt.xlabel('Day of Week')
-    plt.ylabel('Frequency')
-    plt.title('Workout Frequency by Day of Week')
-    plt.show()
-  
     
-def plot_weekly_workout(workout_df):
+def plot_weekly_workouts(workout_df):
     workout_df['WeekNumber'] = workout_df['Date'].dt.strftime('%Y-%W')
     week_counts =  workout_df['WeekNumber'].value_counts().sort_index()
 
@@ -71,8 +59,21 @@ def plot_weekly_workout(workout_df):
             plt.text(x=first_week, y=week_counts.max(), s=str(year), color='red', ha='center', va='bottom')
             
     plt.show()
+
+
+def plot_daily_workouts(workout_df):
+    workout_df['DayName'] = workout_df['Date'].dt.day_name()
+    day_counts = workout_df['DayName'].value_counts().reindex(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'])
+
+    plt.figure(figsize=(8, 6))
+    plt.bar(day_counts.index, day_counts.values)
+    plt.xlabel('Day')
+    plt.ylabel('Frequency')
+    plt.title('Workouts per day')
+    plt.show()
     
-def plot_hourly_workout(workout_df):
+    
+def plot_hourly_workouts(workout_df):
     workout_df["HourNumber"] = workout_df["Date"].dt.strftime('%H')
     hour_counts = workout_df["HourNumber"].value_counts().sort_index()
     
