@@ -4,6 +4,7 @@ import numpy as np
 import yaml
 import july
 import re
+import datetime
 
 
 # Utils
@@ -50,23 +51,14 @@ def plot_workouts_heatmap(workout_df):
 def plot_weekly_workouts(workout_df):
     workout_df['WeekNumber'] = workout_df['Date'].dt.strftime('%Y-%W')
     week_counts =  workout_df['WeekNumber'].value_counts().sort_index()
+    x_ticks = [datetime.datetime.strptime(x + '-1', "%Y-%W-%w").strftime('%D')  for x in week_counts.index]
 
     plt.figure(figsize=(8, 6))
-    plt.plot(list(week_counts.index), list(week_counts.values))
+    plt.bar(x_ticks, week_counts.values)
     plt.xlabel('Week number')
-    plt.xticks([])
+    plt.xticks(x_ticks[::2], rotation="vertical")
     plt.ylabel('Frequency')
     plt.title('Workouts per week')
-    
-    # Add a label/line for when a new year starts
-    years = workout_df['Date'].dt.year.unique()
-    for year in years:
-        first_week = f'{year}-01'
-        if first_week in week_counts.index:
-            plt.axvline(x=first_week, color='red', linestyle='--', linewidth=1)
-            # Add text with the year
-            plt.text(x=first_week, y=week_counts.max(), s=str(year), color='red', ha='center', va='bottom')
-            
     plt.show()
 
 
