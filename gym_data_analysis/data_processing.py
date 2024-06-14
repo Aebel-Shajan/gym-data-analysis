@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import yaml
-import july
+import calplot
 import re
 import datetime
 
@@ -33,19 +33,9 @@ def last_non_zero(arr):
     return len(arr) - first_non_zero(list(reversed(arr)))
 
 
-def plot_workouts_heatmap(workout_df):
-    july.heatmap(
-        workout_df["Date"], 
-        workout_df["Workout Duration"], 
-        title='Workouts', 
-        cmap="YlGn", 
-        colorbar=True,
-        cmax=100,
-        month_grid=True,
-        fontfamily="monospace",
-        fontsize=12,
-        dpi=100
-        )
+def plot_heatmap(intensity, dates, title=""):
+    events = pd.Series(intensity, index=dates)
+    calplot.calplot(events, cmap='YlGn')
 
     
 def plot_weekly_workouts(workout_df):
