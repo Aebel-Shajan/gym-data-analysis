@@ -22,7 +22,7 @@ sample_data = pd.read_csv(
     "./data/input/strong8580138242478526790.csv",
     delimiter=";",
     parse_dates=['Date']
-    ).to_csv().encode("utf-8")
+    ).to_csv(sep=';').encode("utf-8")
 st.download_button(
     label="Download sample data",
     data=sample_data,
@@ -38,6 +38,8 @@ if uploaded_file is None:
 
 # Raw data preprocessing
 raw_df = pd.read_csv(uploaded_file, delimiter=";", parse_dates=['Date'])
+
+    
 raw_df['Workout Duration'] = raw_df['Workout Duration'].apply(analysis.parse_duration)
 # convert weight to kg
 # convert distance to metres
