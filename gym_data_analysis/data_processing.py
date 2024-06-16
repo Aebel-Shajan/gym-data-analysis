@@ -33,11 +33,12 @@ def last_non_zero(arr):
     return len(arr) - first_non_zero(list(reversed(arr)))
 
 
-def plot_heatmap(intensity, dates, title=""):
+def plot_heatmap(intensity, dates):
     events = pd.Series(intensity, index=dates)
-    calplot.calplot(events, cmap='YlGn')
+    calplot.calplot(events, cmap="Greens", vmax=120)
 
-    
+
+# This is sorta broken
 def plot_weekly_workouts(workout_df):
     workout_df['WeekNumber'] = workout_df['Date'].dt.strftime('%Y-%W')
     week_counts =  workout_df['WeekNumber'].value_counts().sort_index()
