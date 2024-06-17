@@ -7,31 +7,6 @@ import re
 import datetime
 
 
-# Utils
-def parse_duration(duration):
-    # Initialize the total duration in minutes
-    total_minutes = 0
-    
-    # Regex to match hours and minutes
-    match = re.match(r'(?:(\d+)h)?\s*(?:(\d+)m)?', duration)
-    if match:
-        hours = match.group(1)
-        minutes = match.group(2)
-        if hours:
-            total_minutes += int(hours) * 60
-        if minutes:
-            total_minutes += int(minutes)
-    return total_minutes
-
-
-def first_non_zero(arr):
-    I = np.nonzero(arr)
-    return I[0][0]
-
-
-def last_non_zero(arr):
-    return len(arr) - first_non_zero(list(reversed(arr)))
-
 
 def plot_heatmap(intensity, dates):
     events = pd.Series(intensity, index=dates)
