@@ -67,7 +67,7 @@ def plot_workouts_every_minute(workout_df):
         start_index = int(row["DailyMinute"]) // smallest_increment
         time_bins[start_index] += 1
         for offset_index in range(row["Workout Duration"] // smallest_increment):
-            time_bins[start_index + offset_index] += 1
+            time_bins[(start_index + offset_index) % len(time_bins)] += 1
     
     plt.figure(figsize=(8, 6))
     plt.plot(time_labels, time_bins)
