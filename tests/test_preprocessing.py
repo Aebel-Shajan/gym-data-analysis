@@ -44,3 +44,20 @@ def test_convert_distance_to_metric(input_row, expected_distance):
     actual_output = preprocessing.convert_distance_to_metric(input_row)
     assert actual_output["Distance"] == expected_distance
     assert actual_output["Distance Unit"] == "km"
+    
+
+def test_convert_df_to_metric():
+    input_df = pd.DataFrame(data={
+        "Distance": [1, 0.5, 36.5, 700, 10, 20],
+        "Distance Unit": ["miles", "miles", "miles", "miles", "km", "km"],
+        "Weight": [1, 0.4, 39.1, 225, 60, 80],
+        "Weight Unit": ["lbs", "lbs", "lbs", "lbs", "kg", "kg"]
+    })
+    actual_df = preprocessing.convert_df_to_metric(input_df)
+    expected_df = pd.DataFrame(data={
+        "Distance": [1*1.609, 0.5*1.609, 36.5*1.609, 700*1.609, 10, 20],
+        "Distance Unit": ["km", "km", "km", "km", "km", "km"],
+        "Weight": [1/ 2.205, 0.4/ 2.205, 39.1/ 2.205, 225/ 2.205, 60, 80],
+        "Weight Unit": ["kg", "kg", "kg", "kg", "kg", "kg"]
+    })
+    pd.testing.assert_frame_equal(actual_df, expected_df)
