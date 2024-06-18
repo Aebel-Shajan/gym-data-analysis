@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-import gym_data_analysis.data_processing as analysis
+import gym_data_analysis.analysis as analysis
 import csv
 
 # Future me will make code clean
