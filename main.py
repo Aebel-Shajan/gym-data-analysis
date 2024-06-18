@@ -1,7 +1,7 @@
-from gym_data_analysis.data_processing import process_data
+from gym_data_analysis.preprocessing import preprocess_strong_csv
 
 def main():
-    process_data()
+    preprocess_strong_csv()
 
 if __name__ == "__main__":
     main()

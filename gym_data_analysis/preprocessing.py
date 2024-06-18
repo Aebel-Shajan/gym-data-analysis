@@ -35,38 +35,37 @@ def parse_duration(duration: str) -> int:
     return total_minutes
 
 
-def convert_lbs_to_kg(pounds: float) -> float:
+def convert_weights_to_metric(row):
+        
     """
-    Converts the weight from pounds to kilograms
+    Converts the weight column from pounds to kilograms in a given row
     
     Parameters
     ----------
-    pounds : float
-        Float equal to the number of pounds.
+    row : pandas dataframe row
+        row to modify
         
     Returns
     -------
-    kilograms : float
-        Equivalent weight in kilograms
+    row : pandas dataframe row
     """
-    return pounds / 2.205
+    if row["Weight Unit"] == "lbs":
+        row["Weight"] = row["Weight"] / 2.205
+    return row
     
 
-def convert_miles_to_km(miles: float) -> float:
+def convert_distance_to_metric(row):
+    """Converts the distance column from miles to kilometres in a given row
+
+    Args:
+        row : pandas dataframe row
+
+    Returns:
+        row : pandas dataframe row 
     """
-    Converts miles to kilometers given distance in miles.
-    
-    Parameters
-    ----------
-    miles : float
-        Float equal to number of miles
-        
-    Returns
-    -------
-    kilometers : float
-        Equivalent distance in kilometers
-    """
-    return miles * 1.609
+    if row["Distance Unit"] == "miles":
+        row["Distance"] = row["Distance"]* 1.609
+    return row
 
 
 def convert_df_to_metric(df: pd.DataFrame) -> pd.DataFrame:
@@ -84,9 +83,9 @@ def convert_df_to_metric(df: pd.DataFrame) -> pd.DataFrame:
     """
     metric_df = df
     if "Weight" in df and "Weight Unit" in df:
-        metric_df = metric_df.apply(lambda row: convert_lbs_to_kg(row["Weight"]) if row["Weight Unit"] == "lbs" else row["Weight"] )        
+        metric_df = metric_df.apply(convert_weights_to_metric, axis=1)   
     if "Distance" in df and "Distance Unit" in df:
-        metric_df = metric_df.apply(lambda row: convert_lbs_to_kg(row["Distance"]) if row["Distance Unit"] == "lbs" else row["Distance"] )       
+        metric_df = metric_df.apply(convert_distance_to_metric, axis=1)       
     return metric_df
 
 
