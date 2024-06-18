@@ -51,6 +51,7 @@ def convert_weights_to_metric(row):
     """
     if row["Weight Unit"] == "lbs":
         row["Weight"] = row["Weight"] / 2.205
+        row["Weight Unit"] = "kg"
     return row
     
 
