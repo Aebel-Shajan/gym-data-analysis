@@ -137,7 +137,7 @@ def check_columns_exist(df: pd.DataFrame, columns: list[str]) -> bool:
     return set(columns).issubset(df.columns)
 
 
-def preprocess_strong_csv():
+def preprocess_strong_csv(csv_filepath):
     """Reads strong data csv from config.yaml file and perform some preprocessing to get a pandas dataframe.
     The strong app exported data has different formats, this function also aims to standardise them.
 
@@ -147,12 +147,6 @@ def preprocess_strong_csv():
     Returns:
         pd.DataFrame: Resulting dataframe
     """
-    
-    config = None
-    with open("config.yaml") as f:
-        config = yaml.safe_load(f)
-    
-    csv_filepath = config["input_data"]
     with open(csv_filepath) as csv_file:
         # Read in csv from config into a pandas dataframe
         raw_df= pd.read_csv(csv_file, delimiter=detect_delimiter(csv_filepath), parse_dates=['Date'])
