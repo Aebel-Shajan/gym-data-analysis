@@ -138,7 +138,8 @@ def check_columns_exist(df: pd.DataFrame, columns: list[str]) -> bool:
 
 
 def preprocess_strong_csv():
-    """Reads strong data csv from config.yaml file. 
+    """Reads strong data csv from config.yaml file and perform some preprocessing to get a pandas dataframe.
+    The strong app exported data has different formats, this function also aims to standardise them.
 
     Raises:
         Exception: Csv not provided in correct format
@@ -152,12 +153,15 @@ def preprocess_strong_csv():
         config = yaml.safe_load(f)
     
     csv_filepath = config["input_data"]
-    
     with open(csv_filepath) as csv_file:
+        # Read in csv from config into a pandas dataframe
         raw_df= pd.read_csv(csv_file, delimiter=detect_delimiter(csv_filepath), parse_dates=['Date'])
+        
+        # The strong app has 2 different formats with different column names
         if "Duration" in raw_df:
             raw_df = raw_df.rename(columns={"Duration" : "Workout Duration"})
         
+        # Check that csv has required columns
         required_columns = [
             "Date",
             "Workout Name",
@@ -172,9 +176,14 @@ def preprocess_strong_csv():
         if not check_columns_exist(raw_df, required_columns):
             raise Exception("CSV provided not in correct format.")
             
+        # Format the columns
         raw_df['Workout Duration'] = raw_df['Workout Duration'].apply(parse_duration)
         raw_df = convert_df_to_metric(raw_df)
         
+        # Remove columns not needed for analysis
         redundant_columns = [ "RPE", "Distance",  "Seconds", "Notes", "Workout Notes", "Weight Unit", "Distance Unit"]
         raw_df = drop_redundant_columns(raw_df, redundant_columns)
+        
+        # Add a new column for volume
+        raw_df["Volume"] = raw_df["Weight"] * raw_df["Reps"]
         return raw_df
