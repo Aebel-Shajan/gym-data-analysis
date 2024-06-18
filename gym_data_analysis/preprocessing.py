@@ -136,8 +136,13 @@ def check_columns_exist(df: pd.DataFrame, columns: list[str]) -> bool:
 
 
 def preprocess_strong_csv():
-    """
-    Reads strong data csv from config.yaml file. 
+    """Reads strong data csv from config.yaml file. 
+
+    Raises:
+        Exception: Csv not provided in correct format
+
+    Returns:
+        pd.DataFrame: Resulting dataframe
     """
     
     config = None
@@ -170,3 +175,4 @@ def preprocess_strong_csv():
         
         redundant_columns = [ "RPE", "Distance",  "Seconds", "Notes", "Workout Notes", "Weight Unit", "Distance Unit"]
         raw_df = drop_redundant_columns(raw_df, redundant_columns)
+        return raw_df
