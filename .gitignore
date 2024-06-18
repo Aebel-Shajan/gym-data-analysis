@@ -28,3 +28,7 @@ env/
 # Logs and temporary files
 *.log
 *.tmp
+
+# Project specific
+test_input/
+output/
