@@ -17,7 +17,7 @@ def test_parse_duration(duration, expected_output):
 
 # Am i doing to much here?
 @pytest.mark.parametrize(
-    "input_row, expected_weight, expected_unit",
+    "input_row, expected_weight",
     [
         (pd.Series({"Weight": 220.5, "Weight Unit": "lbs"}), 220.5 / 2.205),
         (pd.Series({"Weight": 100, "Weight Unit": "kg"}), 100),
