@@ -19,16 +19,16 @@ def test_parse_duration(duration, expected_output):
 @pytest.mark.parametrize(
     "input_row, expected_weight, expected_unit",
     [
-        (pd.Series({"Weight": 220.5, "Weight Unit": "lbs"}), 220.5 / 2.205, "kg"),
-        (pd.Series({"Weight": 100, "Weight Unit": "kg"}), 100, "kg"),
-        (pd.Series({"Weight": 150, "Weight Unit": "lbs"}), 150 / 2.205, "kg"),
-        (pd.Series({"Weight": 75, "Weight Unit": "kg"}), 75, "kg")
+        (pd.Series({"Weight": 220.5, "Weight Unit": "lbs"}), 220.5 / 2.205),
+        (pd.Series({"Weight": 100, "Weight Unit": "kg"}), 100),
+        (pd.Series({"Weight": 150, "Weight Unit": "lbs"}), 150 / 2.205),
+        (pd.Series({"Weight": 75, "Weight Unit": "kg"}), 75)
     ]
 )
-def test_convert_weights_to_metric(input_row, expected_weight, expected_unit):
+def test_convert_weights_to_metric(input_row, expected_weight):
     actual_output = preprocessing.convert_weights_to_metric(input_row)
     assert actual_output["Weight"] == expected_weight
-    assert actual_output["Weight Unit"] == expected_unit
+    assert actual_output["Weight Unit"] == "kg"
 
 
 @pytest.mark.parametrize(
