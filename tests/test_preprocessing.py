@@ -61,3 +61,18 @@ def test_convert_df_to_metric():
         "Weight Unit": ["kg", "kg", "kg", "kg", "kg", "kg"]
     })
     pd.testing.assert_frame_equal(actual_df, expected_df)
+    
+
+def test_drop_redundant_columns():
+    input_df = pd.DataFrame(data={
+        "A": [1, 2, 3],
+        "B": [4, 5, 6],
+        "C": [7, 8, 9],
+        "D": [10, 11, 12]
+    })
+    actual_df = preprocessing.drop_redundant_columns(input_df, ["C", "B"])
+    expected_df = pd.DataFrame(data={
+        "A": [1, 2, 3],
+        "D": [10, 11, 12]
+    })
+    pd.testing.assert_frame_equal(actual_df, expected_df)
