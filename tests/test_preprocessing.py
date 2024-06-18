@@ -89,3 +89,16 @@ def test_detect_delimiter(tmpdir, filename, content, expected_delimiter):
     with open(file_path, 'w') as f:
         f.write(content)
     assert preprocessing.detect_delimiter(file_path) == expected_delimiter
+
+
+def test_check_columns_exist():
+    input_df = pd.DataFrame(data={
+        "A": [1, 2, 3],
+        "B": [4, 5, 6],
+        "C": [7, 8, 9],
+        "D": [10, 11, 12]
+    })
+    positive_check = preprocessing.check_columns_exist(input_df, ["A", "B"])
+    negative_check = preprocessing.check_columns_exist(input_df, ["E", "F", "A", "B"])
+    assert positive_check == True
+    assert negative_check == False
