@@ -76,3 +76,16 @@ def test_drop_redundant_columns():
         "D": [10, 11, 12]
     })
     pd.testing.assert_frame_equal(actual_df, expected_df)
+
+
+@pytest.mark.parametrize("filename, content, expected_delimiter", [
+    ('comma.csv', "col1,col2,col3\n1,2,3\n4,5,6\n", ','),
+    ('semicolon.csv', "col1;col2;col3\n1;2;3\n4;5;6\n", ';'),
+    ('tab.csv', "col1\tcol2\tcol3\n1\t2\t3\n4\t5\t6\n", '\t'),
+])
+def test_detect_delimiter(tmpdir, filename, content, expected_delimiter):
+    # Note: tmpdir is an inbuilt fixture which allows creation of temprory files
+    file_path = tmpdir.join(filename)
+    with open(file_path, 'w') as f:
+        f.write(content)
+    assert preprocessing.detect_delimiter(file_path) == expected_delimiter
