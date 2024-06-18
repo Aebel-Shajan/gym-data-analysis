@@ -66,6 +66,7 @@ def convert_distance_to_metric(row):
     """
     if row["Distance Unit"] == "miles":
         row["Distance"] = row["Distance"]* 1.609
+        row["Distance Unit"] = "km"
     return row
 
 
