@@ -15,7 +15,7 @@ def test_parse_duration(duration, expected_output):
     assert actual_output == expected_output
 
 
-
+# Am i doing to much here?
 @pytest.mark.parametrize(
     "input_row, expected_weight, expected_unit",
     [
@@ -29,4 +29,18 @@ def test_convert_weights_to_metric(input_row, expected_weight, expected_unit):
     actual_output = preprocessing.convert_weights_to_metric(input_row)
     assert actual_output["Weight"] == expected_weight
     assert actual_output["Weight Unit"] == expected_unit
-    
+
+
+@pytest.mark.parametrize(
+    "input_row, expected_distance",
+    [
+        (pd.Series({"Distance": 220.5, "Distance Unit": "miles"}), 220.5 * 1.609),
+        (pd.Series({"Distance": 100, "Distance Unit": "km"}), 100),
+        (pd.Series({"Distance": 150, "Distance Unit": "miles"}), 150 * 1.609),
+        (pd.Series({"Distance": 75, "Distance Unit": "km"}), 75)
+    ]
+)
+def test_convert_distance_to_metric(input_row, expected_distance):
+    actual_output = preprocessing.convert_distance_to_metric(input_row)
+    assert actual_output["Distance"] == expected_distance
+    assert actual_output["Distance Unit"] == "km"
