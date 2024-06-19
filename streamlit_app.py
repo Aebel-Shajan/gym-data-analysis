@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import gym_data_analysis.analysis as analysis
 import gym_data_analysis.preprocessing as preprocessing
 import csv
+from io import StringIO
 
 # Future me will make code clean
 st.image("./thumbnail.png")
@@ -40,8 +41,9 @@ if uploaded_file is None:
     exit()
 
 # Raw data preprocessing
-st.write(uploaded_file)
-raw_df = preprocessing.preprocess_strong_csv(uploaded_file)
+stringio = StringIO(uploaded_file.getvalue().decode("utf-8"))
+st.write(stringio)
+raw_df = preprocessing.preprocess_strong_csv(stringio)
 st.write(raw_df)
 
 
