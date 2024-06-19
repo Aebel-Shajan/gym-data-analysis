@@ -40,6 +40,7 @@ if uploaded_file is None:
     exit()
 
 # Raw data preprocessing
+st.write(uploaded_file)
 raw_df = preprocessing.preprocess_strong_csv(uploaded_file)
 st.write(raw_df)
 
