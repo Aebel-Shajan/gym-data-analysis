@@ -88,6 +88,7 @@ def test_detect_delimiter(tmpdir, filename, content, expected_delimiter):
     file_path = tmpdir.join(filename)
     with open(file_path, 'w') as f:
         f.write(content)
+    with open(file_path, "r") as f:
         assert preprocessing.detect_delimiter(f) == expected_delimiter
 
 
