@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import gym_data_analysis.analysis as analysis
+import gym_data_analysis.preprocessing as preprocessing
 import csv
 
 # Future me will make code clean
@@ -39,30 +40,7 @@ if uploaded_file is None:
     exit()
 
 # Raw data preprocessing
-first_csv_row = uploaded_file.readline().decode("utf-8")
-delimiter = ";"
-if "," in first_csv_row:
-    delimiter = ","
-uploaded_file.seek(0)
-
-raw_df= pd.read_csv(uploaded_file, delimiter=delimiter, parse_dates=['Date'])
-
-if "Workout Duration" not in first_csv_row:
-    raw_df = raw_df.rename(columns={"Duration" : "Workout Duration"})
-
-raw_df['Workout Duration'] = raw_df['Workout Duration'].apply(analysis.parse_duration)
-
-raw_df = raw_df.drop(columns=[ "RPE", "Distance",  "Seconds", "Notes", "Workout Notes"])
-
-if "Weight Unit" in first_csv_row:
-    raw_df.drop(columns=["Weight Unit"])
-if "Distance Unit" in first_csv_row:
-    raw_df.drop(columns=["Distance Unit"])
-    
-# convert weight to kg
-# convert distance to metres
-# remove rows with null weights?
-raw_df["Volume"] = raw_df["Reps"] * raw_df["Weight"]
+raw_df = preprocessing.preprocess_strong_csv(uploaded_file)
 st.write(raw_df)
 
 

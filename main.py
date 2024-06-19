@@ -7,7 +7,8 @@ def main():
         config = yaml.safe_load(f)
 
     #Preprocessing
-    raw_df = preprocess_strong_csv(config["input_data"])
+    with open(config["input_data"]) as csv_file:
+        raw_df = preprocess_strong_csv(csv_file)
     print(raw_df)
 
 if __name__ == "__main__":
