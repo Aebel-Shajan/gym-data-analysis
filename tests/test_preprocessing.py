@@ -88,7 +88,7 @@ def test_detect_delimiter(tmpdir, filename, content, expected_delimiter):
     file_path = tmpdir.join(filename)
     with open(file_path, 'w') as f:
         f.write(content)
-    assert preprocessing.detect_delimiter(file_path) == expected_delimiter
+        assert preprocessing.detect_delimiter(f) == expected_delimiter
 
 
 def test_check_columns_exist():

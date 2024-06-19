@@ -3,6 +3,7 @@ import pandas as pd
 import yaml
 import re
 import csv
+from typing import BinaryIO
 
 
 def parse_duration(duration: str) -> int:
@@ -109,19 +110,20 @@ def drop_redundant_columns(df: pd.DataFrame, redundant_cols: list[str]) -> pd.Da
     return output_df
 
 
-def detect_delimiter(filename: str) -> str:
+def detect_delimiter(csv_file: BinaryIO) -> str:
     """
     Detect the delimiter used in a CSV file.
 
     Args:
-        filename (str): The path to the CSV file.
+        csv_file (BinaryIO): The path to the CSV file.
 
     Returns:
         str: The detected delimiter (e.g. ',', ';', '\t', etc.).
     """
-    with open(filename, 'r') as csvfile:
-        dialect = csv.Sniffer().sniff(csvfile.read(1024))
-        return dialect.delimiter
+    original_pos = csv_file.tell()
+    dialect = csv.Sniffer().sniff(csv_file.read(1024))
+    csv_file.seek(original_pos)
+    return dialect.delimiter
 
 
 def check_columns_exist(df: pd.DataFrame, columns: list[str]) -> bool:
@@ -137,7 +139,7 @@ def check_columns_exist(df: pd.DataFrame, columns: list[str]) -> bool:
     return set(columns).issubset(df.columns)
 
 
-def preprocess_strong_csv(csv_filepath):
+def preprocess_strong_csv(csv_file):
     """Reads strong data csv from config.yaml file and perform some preprocessing to get a pandas dataframe.
     The strong app exported data has different formats, this function also aims to standardise them.
 
@@ -147,37 +149,36 @@ def preprocess_strong_csv(csv_filepath):
     Returns:
         pd.DataFrame: Resulting dataframe
     """
-    with open(csv_filepath) as csv_file:
-        # Read in csv from config into a pandas dataframe
-        raw_df= pd.read_csv(csv_file, delimiter=detect_delimiter(csv_filepath), parse_dates=['Date'])
+    # Read in csv from config into a pandas dataframe
+    raw_df= pd.read_csv(csv_file, delimiter=detect_delimiter(csv_file), parse_dates=['Date'])
+    
+    # The strong app has 2 different formats with different column names
+    if "Duration" in raw_df:
+        raw_df = raw_df.rename(columns={"Duration" : "Workout Duration"})
+    
+    # Check that csv has required columns
+    required_columns = [
+        "Date",
+        "Workout Name",
+        "Exercise Name",
+        "Set Order",
+        "Weight",
+        "Reps",
+        "Distance",
+        "Seconds",
+        "Workout Duration"
+        ]
+    if not check_columns_exist(raw_df, required_columns):
+        raise Exception("CSV provided not in correct format.")
         
-        # The strong app has 2 different formats with different column names
-        if "Duration" in raw_df:
-            raw_df = raw_df.rename(columns={"Duration" : "Workout Duration"})
-        
-        # Check that csv has required columns
-        required_columns = [
-            "Date",
-            "Workout Name",
-            "Exercise Name",
-            "Set Order",
-            "Weight",
-            "Reps",
-            "Distance",
-            "Seconds",
-            "Workout Duration"
-            ]
-        if not check_columns_exist(raw_df, required_columns):
-            raise Exception("CSV provided not in correct format.")
-            
-        # Format the columns
-        raw_df['Workout Duration'] = raw_df['Workout Duration'].apply(parse_duration)
-        raw_df = convert_df_to_metric(raw_df)
-        
-        # Remove columns not needed for analysis
-        redundant_columns = [ "RPE", "Distance",  "Seconds", "Notes", "Workout Notes", "Weight Unit", "Distance Unit"]
-        raw_df = drop_redundant_columns(raw_df, redundant_columns)
-        
-        # Add a new column for volume
-        raw_df["Volume"] = raw_df["Weight"] * raw_df["Reps"]
-        return raw_df
+    # Format the columns
+    raw_df['Workout Duration'] = raw_df['Workout Duration'].apply(parse_duration)
+    raw_df = convert_df_to_metric(raw_df)
+    
+    # Remove columns not needed for analysis
+    redundant_columns = [ "RPE", "Distance",  "Seconds", "Notes", "Workout Notes", "Weight Unit", "Distance Unit"]
+    raw_df = drop_redundant_columns(raw_df, redundant_columns)
+    
+    # Add a new column for volume
+    raw_df["Volume"] = raw_df["Weight"] * raw_df["Reps"]
+    return raw_df
