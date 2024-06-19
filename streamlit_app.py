@@ -40,10 +40,12 @@ uploaded_file = st.file_uploader("Upload csv file from strong app here:", type="
 if uploaded_file is None:
     exit()
 
+# Get uploaded file in correct format
+uploaded_file_string = str(uploaded_file.read(), "utf-8")
+csv_string_io = StringIO(uploaded_file_string)
+
 # Raw data preprocessing
-stringio = StringIO(uploaded_file.getvalue().decode("utf-8"))
-st.write(stringio)
-raw_df = preprocessing.preprocess_strong_csv(stringio)
+raw_df = preprocessing.preprocess_strong_csv(csv_string_io)
 st.write(raw_df)
 
 
